@@ -6,7 +6,7 @@ import { ConfirmButton } from '../components/ConfirmButton'
 import { AlbumForm } from '../components/AlbumForm'
 
 export function Album() {
-  const navigate = useNavigate(); // Initialize useHistory hook
+  const navigate = useNavigate() // Initialize useHistory hook
 
   const { database, useLiveQuery } = useFireproof('gallery')
   const { id } = useParams()
@@ -23,13 +23,17 @@ export function Album() {
   }
   const handleDelete = () => {
     database.del(id!).then(() => {
-      navigate('/'); // Navigate back to root path
-    });
-  };
+      navigate('/') // Navigate back to root path
+    })
+  }
+  const [color, setColor] = useState('#111'); // Initial color value
+  const [bgColor, setBgColor] = useState('#ffffff'); // Initial background color value
 
+
+  console.log('name', name)
   return (
-    <>
-  <div className="flex justify-between items-center">
+    <div >
+      <div className="flex justify-between items-center mb-2" >
         <h1>Album: {album?.name}</h1>
         <button onClick={() => setShowForm(!showForm)} className="text-xl">
           ⚙️
@@ -37,11 +41,15 @@ export function Album() {
       </div>
       {showForm && (
         <AlbumForm
-        columns={columns}
-        setColumns={setColumns}
-        handlePublish={handlePublish}
-        handleDelete={handleDelete}
-      />
+          columns={columns}
+          setColumns={setColumns}
+          color={color}
+          setColor={setColor}
+          bgColor={bgColor}
+          setBgColor={setBgColor}
+          handlePublish={handlePublish}
+          handleDelete={handleDelete}
+        />
       )}
 
       <ImageDocList
@@ -54,6 +62,6 @@ export function Album() {
           database.put(album)
         }}
       />
-    </>
+    </div>
   )
 }
