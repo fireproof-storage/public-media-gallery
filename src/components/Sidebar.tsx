@@ -93,7 +93,7 @@ export function Sidebar() {
       {authorized ? (
         <FileDrop onDrop={gotFiles}>
           <div style={{ minHeight: '3em' }} className="bg-slate-100 dark:bg-slate-700 rounded p-4 mb-4 hover:dark:bg-slate-600">
-            🎞 Drop images here to import!
+            🎞 Drop image files here! 🖼
           </div>
         </FileDrop>
       ) : (

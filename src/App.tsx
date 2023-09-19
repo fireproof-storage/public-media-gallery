@@ -6,7 +6,7 @@ import { Home } from './pages/Home'
 import { Album } from './pages/Album'
 import { Upload } from './pages/Upload'
 import { Sidebar } from './components/Sidebar'
-
+import { DragProvider } from './components/DragContext'
 
 
 function Layout({ children }: { children: React.ReactNode }) {
@@ -27,7 +27,7 @@ function App() {
   ]
 
   return (
-    <>
+    <DragProvider>
       <Header />
       <Routes>
         {routes.map(({ path, component }, index) => (
@@ -38,7 +38,7 @@ function App() {
           />
         ))}
       </Routes>
-    </>
+    </DragProvider>
   )
 }
 

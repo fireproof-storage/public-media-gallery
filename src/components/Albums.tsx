@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { DragContext } from './DragContext'
+
 import { Link } from 'react-router-dom'
 import { AutoFocusInput } from './AutoFocusInput'
 import { useFireproof } from 'use-fireproof'
 
 export function Albums() {
+  const { isDragging } = useContext(DragContext)
+
   const { database, useLiveQuery } = useFireproof('gallery')
   const [isCreating, setIsCreating] = useState(false)
   const [albumName, setAlbumName] = useState('')
@@ -27,10 +31,9 @@ export function Albums() {
   const albums = useLiveQuery(
     (doc, emit) => {
       if (doc.type === 'album') {
-        emit(doc.updated)
+        emit(doc.name)
       }
-    },
-    { descending: true }
+    }
   )
 
   const handleDragOver = e => {
@@ -43,12 +46,20 @@ export function Albums() {
     // Handle the dropped data (e.g., update state, make API call)
     console.log(`Dropped data: ${droppedData} onto ${albumId}`)
     database.get(albumId).then(albumDoc => {
+      console.log('handleDrop', albumDoc, droppedData)
+
+      // Remove the droppedData if it already exists in the images array
+      albumDoc.images = albumDoc.images.filter(image => image !== droppedData)
+
+      // Add the droppedData back in its new position (e.g., at the beginning)
       albumDoc.images.push(droppedData)
+
       albumDoc.updated = Date.now()
       database.put(albumDoc)
     })
   }
 
+  console.log('isDragging', isDragging)
   return (
     <div className="mb-2">
       <h2>Albums</h2>
@@ -90,7 +101,10 @@ export function Albums() {
           >
             <Link
               to={`/album/${album._id}`}
-              className="block hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-2"
+              className={
+                'block hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-2' +
+                (isDragging ? ' bg-slate-100 dark:bg-slate-700' : '')
+              }
             >
               <span className="inline-block mr-2">{album.name}</span>
               <span className="inline-block text-slate-700 text-xs">
