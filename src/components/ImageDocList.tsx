@@ -53,7 +53,6 @@ export function ImageDocList({
   const [, drop] = useDrop({
     accept: ItemTypes.IMAGE,
     drop(item: DragItem, monitor) {
-      console.log('drop', item, monitor)
       const dragIndex = docs.findIndex(doc => doc._id === item.id);
     
       if (!ref.current) {

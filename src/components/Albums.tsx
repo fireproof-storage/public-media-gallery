@@ -15,7 +15,6 @@ export function Albums() {
   const listRef = useRef(null) // Single ref for the entire list
 
   const handleCreateClick = () => {
-    console.log(`Creating album with name: ${albumName}`)
     const albumDoc = {
       type: 'album',
       name: albumName,
@@ -37,7 +36,6 @@ export function Albums() {
 
   const handleDrop = (albumId: string, item) => {
     const { id } = item
-    console.log(`Dropped data: ${id} onto ${albumId}`)
     database.get(albumId).then(albumDoc => {
       albumDoc.images = albumDoc.images.filter(image => image !== id)
       albumDoc.images.push(id)
@@ -49,7 +47,6 @@ export function Albums() {
   const [, drop] = useDrop({
     accept: ItemTypes.IMAGE,
     drop: (item, monitor) => {
-      console.log('drop', item, monitor)
       const clientOffset = monitor.getClientOffset()
       const elementUnderCursor = document.elementFromPoint(clientOffset.x, clientOffset.y)
 
@@ -62,7 +59,6 @@ export function Albums() {
       if (targetElement) {
         const targetAlbumId = targetElement.getAttribute('data-album-id')
         if (targetAlbumId) {
-          console.log('dropped onto album', targetAlbumId)
           handleDrop(targetAlbumId, item)
         }
       }
@@ -72,7 +68,6 @@ export function Albums() {
   drop(listRef) // Use the drop function to wrap the single ref
 
   const { isDragging } = useContext(DragContext)
-  console.log('isDragging', isDragging)
 
   return (
     <div className="mb-2">

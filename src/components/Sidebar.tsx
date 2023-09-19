@@ -86,8 +86,6 @@ export function Sidebar() {
     }
   }
 
-  console.log('uploads', uploads)
-
   return (
     <div className="w-1/4 p-4 dark:bg-gray-900 bg-slate-200">
       {authorized ? (
