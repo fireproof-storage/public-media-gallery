@@ -1,13 +1,16 @@
-import React, { useContext, useState } from 'react'
-import { DragContext } from './DragContext'
-
+import React, { useState, useContext } from 'react'
+import { useDrop } from 'react-dnd'
 import { Link } from 'react-router-dom'
 import { AutoFocusInput } from './AutoFocusInput'
 import { useFireproof } from 'use-fireproof'
+import { DragContext } from './DragContext'
+
+export const ItemTypes = {
+  IMAGE: 'IMAGE'
+}
 
 export function Albums() {
-  const { isDragging } = useContext(DragContext)
-
+  // Removed DragContext
   const { database, useLiveQuery } = useFireproof('gallery')
   const [isCreating, setIsCreating] = useState(false)
   const [albumName, setAlbumName] = useState('')
@@ -28,17 +31,11 @@ export function Albums() {
     })
   }
 
-  const albums = useLiveQuery(
-    (doc, emit) => {
-      if (doc.type === 'album') {
-        emit(doc.name)
-      }
+  const albums = useLiveQuery((doc, emit) => {
+    if (doc.type === 'album') {
+      emit(doc.name)
     }
-  )
-
-  const handleDragOver = e => {
-    e.preventDefault()
-  }
+  })
 
   const handleDrop = (albumId: string) => e => {
     e.preventDefault()
@@ -59,6 +56,20 @@ export function Albums() {
     })
   }
 
+  const refs = albums.docs?.reduce((acc, album) => {
+    acc[album._id] = React.createRef()
+    return acc
+  }, {})
+
+  const [, drop] = useDrop({
+    accept: ItemTypes.IMAGE,
+    drop: (item, monitor) => {
+      console.log('drop', item, monitor)
+      handleDrop(item.albumId)(monitor)
+    }
+  })
+
+  const { isDragging } = useContext(DragContext)
   console.log('isDragging', isDragging)
   return (
     <div className="mb-2">
@@ -92,27 +103,25 @@ export function Albums() {
             </>
           )}
         </li>
-        {albums.docs?.map(album => (
-          <li
-            onDragOver={handleDragOver}
-            onDrop={handleDrop(album._id)}
-            key={album._id}
-            className="p-2"
-          >
-            <Link
-              to={`/album/${album._id}`}
-              className={
-                'block hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-2' +
-                (isDragging ? ' bg-slate-100 dark:bg-slate-700' : '')
-              }
-            >
-              <span className="inline-block mr-2">{album.name}</span>
-              <span className="inline-block text-slate-700 text-xs">
-                {album.created && new Date(album.created).toLocaleString()}
-              </span>
-            </Link>
-          </li>
-        ))}
+        {albums.docs?.map(album => {
+          drop(refs[album._id])
+          return (
+            <li key={album._id} ref={refs[album._id]} className="p-2">
+              <Link
+                to={`/album/${album._id}`}
+                className={
+                  'block hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-2' +
+                  (isDragging ? ' bg-slate-100 dark:bg-slate-700' : '')
+                }
+              >
+                <span className="inline-block mr-2">{album.name}</span>
+                <span className="inline-block text-slate-700 text-xs">
+                  {album.created && new Date(album.created).toLocaleString()}
+                </span>
+              </Link>
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

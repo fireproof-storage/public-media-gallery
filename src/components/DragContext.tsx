@@ -1,15 +1,39 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
+import { DndProvider, useDragLayer } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend'; 
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const DragContext = createContext({ isDragging : false, setIsDragging : (_isDragging: boolean) => {
-  console.log('setIsDragging not implemented')
-} });
+// Define the shape of the context
+interface DragContextProps {
+  isDragging: boolean;
+}
 
-export const DragProvider = ({ children }) => {
-  const [isDragging, setIsDragging] = useState(false);
+// Create the context
+export const DragContext = createContext<DragContextProps>({
+  isDragging: false,
+});
+
+// Inner component to hold the drag layer logic
+const DragLayerInner: React.FC = ({ children }) => {
+  const { isDragging } = useDragLayer(monitor => ({
+    isDragging: monitor.isDragging(),
+  }));
+
   return (
-    <DragContext.Provider value={{ isDragging, setIsDragging }}>
+    <DragContext.Provider value={{ isDragging }}>
       {children}
     </DragContext.Provider>
   );
 };
+
+// Create the provider
+export const DragProvider: React.FC = ({ children }) => {
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <DragLayerInner>
+        {children}
+      </DragLayerInner>
+    </DndProvider>
+  );
+};
+
+// Now you can use `useContext(DragContext)` in any child component to get the `isDragging` state.

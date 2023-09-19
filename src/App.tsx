@@ -8,7 +8,6 @@ import { Upload } from './pages/Upload'
 import { Sidebar } from './components/Sidebar'
 import { DragProvider } from './components/DragContext'
 
-
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen dark:bg-gray-950 bg-slate-200 text-slate-800 dark:text-slate-200">
