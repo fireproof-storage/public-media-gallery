@@ -3,7 +3,7 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Header } from './components/Header'
 import { Home } from './pages/Home'
-import { Gallery } from './pages/Gallery'
+import { Album } from './pages/Album'
 import { Upload } from './pages/Upload'
 import { Sidebar } from './components/Sidebar'
 
@@ -21,7 +21,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 function App() {
   const routes = [
     // { path: '/item/:id', component: Detail },
-    { path: '/gallery/:id', component: Gallery },
+    { path: '/album/:id', component: Album },
     { path: '/upload/:id', component: Upload },
     { path: '/', component: Home }
   ]

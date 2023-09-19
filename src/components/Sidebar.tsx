@@ -3,6 +3,7 @@ import { FileDrop } from 'react-file-drop'
 import { useFireproof } from 'use-fireproof'
 import { Login } from './Login'
 import { Link } from 'react-router-dom'
+import { Albums } from './Albums'
 
 export function Sidebar() {
   const { database, useLiveQuery } = useFireproof('gallery')
@@ -92,18 +93,22 @@ export function Sidebar() {
       {authorized ? (
         <FileDrop onDrop={gotFiles}>
           <div style={{ minHeight: '3em' }} className="bg-slate-100 dark:bg-slate-700 rounded p-4 mb-4 hover:dark:bg-slate-600">
-            🎞 Drop images here!
+            🎞 Drop images here to import!
           </div>
         </FileDrop>
       ) : (
         <Login onLogin={onLogin} />
       )}
 
-      <h2>Recent Uploads</h2>
+    <Albums />
+
+
+
+      <h2>Recent Imports</h2>
       <ul className="list-inside list-none">
         {uploads.docs.map(upload => (
           <li key={upload._id} className="p-2">
-            <Link to={`/upload/${upload._id}`} className="block hover:bg-gray-100 rounded px-2">
+            <Link to={`/upload/${upload._id}`} className="block hover:bg-gray-100dark: hover:bg-gray-800 rounded px-2">
               <span className="text-xs text-gray-500 block pb-2">
                 {new Date(upload.created).toLocaleString()}
               </span>
