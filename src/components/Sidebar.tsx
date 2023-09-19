@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { FileDrop } from 'react-file-drop'
 import { useFireproof } from 'use-fireproof'
 import { Login } from './Login'
+import { Link } from 'react-router-dom'
 
 export function Sidebar() {
-  const theStyle = { background: '#bbb', width: '200px', height: '200px' }
   const { database, useLiveQuery } = useFireproof('gallery')
   const [authorized, setAuthorized] = useState(false)
   const cx = database.connect('gallery')
@@ -88,25 +88,31 @@ export function Sidebar() {
   console.log('uploads', uploads)
 
   return (
-    <div className='w-1/4 p-4 dark:bg-gray-900 bg-slate-200'>
-        <h1>Media Library</h1>
-        {authorized ? (
-          <FileDrop onDrop={gotFiles}>
-            <div style={theStyle}>Drop images here!</div>
-          </FileDrop>
-        ) : (
-          <Login onLogin={onLogin} />
-        )}
+    <div className="w-1/4 p-4 dark:bg-gray-900 bg-slate-200">
+      {authorized ? (
+        <FileDrop onDrop={gotFiles}>
+          <div style={{ minHeight: '3em' }} className="bg-slate-100 p-4 mb-4">
+            🎞 Drop images here!
+          </div>
+        </FileDrop>
+      ) : (
+        <Login onLogin={onLogin} />
+      )}
 
-        <h2>Uploads</h2>
-        <ul>
-          {uploads.docs.map(upload => (
-            <li key={upload._id}>
-              {upload.status} {upload.count}
-            </li>
-          ))}
-        </ul>
+      <h2>Uploads</h2>
+      <ul className="list-inside list-none">
+        {uploads.docs.map(upload => (
+          <li key={upload._id} className="p-2">
+            <Link to={`/upload/${upload._id}`} className="block hover:bg-gray-100 rounded p-2">
+              <span className="text-xs text-gray-500 block pb-2">
+                {new Date(upload.created).toLocaleString()}
+              </span>
+              <span className="inline-block mr-2">{upload.count} files</span>
+              <span className="inline-block">({upload.status})</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
-
