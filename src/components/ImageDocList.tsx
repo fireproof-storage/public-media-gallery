@@ -55,9 +55,28 @@ export function ImageDocList({
     drop(item: DragItem, monitor) {
       console.log('drop', item, monitor)
       const dragIndex = docs.findIndex(doc => doc._id === item.id);
-      // Add your logic to find the hover index here
-      const hoverIndex = 1/* Your logic to find hover index */;
-      
+    
+      if (!ref.current) {
+        return;
+      }
+    
+      // Get mouse position
+      const clientOffset = monitor.getClientOffset();
+    
+      // Get grid dimensions
+      const gridBoundingRect = ref.current.getBoundingClientRect();
+    
+      // Calculate dimensions of a single grid item
+      const itemWidth = gridBoundingRect.width / columns;
+      const itemHeight = gridBoundingRect.height / Math.ceil(docs.length / columns);
+    
+      // Calculate row and column based on mouse position
+      const hoverRow = Math.floor((clientOffset.y - gridBoundingRect.top) / itemHeight);
+      const hoverCol = Math.floor((clientOffset.x - gridBoundingRect.left) / itemWidth);
+    
+      // Calculate hoverIndex
+      const hoverIndex = hoverRow * columns + hoverCol;
+    
       if (dragIndex !== hoverIndex && onReorder) {
         const newDocs = [...docs];
         const [movedItem] = newDocs.splice(dragIndex, 1);
@@ -65,6 +84,7 @@ export function ImageDocList({
         onReorder(newDocs);
       }
     }
+    
   })
 
   drop(ref) // Use the drop function to wrap the ref
