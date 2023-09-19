@@ -1,22 +1,20 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { useDrop } from 'react-dnd'
 import { Link } from 'react-router-dom'
 import { AutoFocusInput } from './AutoFocusInput'
 import { useFireproof } from 'use-fireproof'
 import { DragContext } from './DragContext'
 
-export const ItemTypes = {
-  IMAGE: 'IMAGE'
-}
+import { ItemTypes } from './ImageDocList'
 
 export function Albums() {
-  // Removed DragContext
   const { database, useLiveQuery } = useFireproof('gallery')
   const [isCreating, setIsCreating] = useState(false)
   const [albumName, setAlbumName] = useState('')
 
+  const listRef = useRef(null) // Single ref for the entire list
+
   const handleCreateClick = () => {
-    // Handle album creation logic here
     console.log(`Creating album with name: ${albumName}`)
     const albumDoc = {
       type: 'album',
@@ -37,44 +35,49 @@ export function Albums() {
     }
   })
 
-  const handleDrop = (albumId: string) => e => {
-    e.preventDefault()
-    const droppedData = e.dataTransfer.getData('text')
-    // Handle the dropped data (e.g., update state, make API call)
-    console.log(`Dropped data: ${droppedData} onto ${albumId}`)
+  const handleDrop = (albumId: string, item) => {
+    const { id } = item
+    console.log(`Dropped data: ${id} onto ${albumId}`)
     database.get(albumId).then(albumDoc => {
-      console.log('handleDrop', albumDoc, droppedData)
-
-      // Remove the droppedData if it already exists in the images array
-      albumDoc.images = albumDoc.images.filter(image => image !== droppedData)
-
-      // Add the droppedData back in its new position (e.g., at the beginning)
-      albumDoc.images.push(droppedData)
-
+      albumDoc.images = albumDoc.images.filter(image => image !== id)
+      albumDoc.images.push(id)
       albumDoc.updated = Date.now()
       database.put(albumDoc)
     })
   }
 
-  const refs = albums.docs?.reduce((acc, album) => {
-    acc[album._id] = React.createRef()
-    return acc
-  }, {})
-
   const [, drop] = useDrop({
     accept: ItemTypes.IMAGE,
     drop: (item, monitor) => {
       console.log('drop', item, monitor)
-      handleDrop(item.albumId)(monitor)
+      const clientOffset = monitor.getClientOffset()
+      const elementUnderCursor = document.elementFromPoint(clientOffset.x, clientOffset.y)
+
+      // Traverse up the DOM tree to find the closest li element (album)
+      let targetElement = elementUnderCursor
+      while (targetElement && targetElement.tagName !== 'LI') {
+        targetElement = targetElement.parentElement
+      }
+
+      if (targetElement) {
+        const targetAlbumId = targetElement.getAttribute('data-album-id')
+        if (targetAlbumId) {
+          console.log('dropped onto album', targetAlbumId)
+          handleDrop(targetAlbumId, item)
+        }
+      }
     }
   })
 
+  drop(listRef) // Use the drop function to wrap the single ref
+
   const { isDragging } = useContext(DragContext)
   console.log('isDragging', isDragging)
+
   return (
     <div className="mb-2">
       <h2>Albums</h2>
-      <ul>
+      <ul ref={listRef}>
         <li key={'add'} className="p-2">
           {isCreating ? (
             <form
@@ -104,9 +107,8 @@ export function Albums() {
           )}
         </li>
         {albums.docs?.map(album => {
-          drop(refs[album._id])
           return (
-            <li key={album._id} ref={refs[album._id]} className="p-2">
+            <li key={album._id} data-album-id={album._id} className="p-2">
               <Link
                 to={`/album/${album._id}`}
                 className={

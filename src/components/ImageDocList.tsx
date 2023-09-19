@@ -27,7 +27,7 @@ const ImageDocListItem: React.FC<{ upload: Doc }> = ({ upload }) => {
     <li ref={ref} className="bg-slate-500">
       <img
         className="w-full h-auto"
-        draggable="true"
+        draggable="false"
         onDragStart={e => {
           e.dataTransfer.setData('text', upload._id)
         }}
