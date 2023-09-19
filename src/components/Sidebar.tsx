@@ -91,7 +91,7 @@ export function Sidebar() {
     <div className="w-1/4 p-4 dark:bg-gray-900 bg-slate-200">
       {authorized ? (
         <FileDrop onDrop={gotFiles}>
-          <div style={{ minHeight: '3em' }} className="bg-slate-100 p-4 mb-4">
+          <div style={{ minHeight: '3em' }} className="bg-slate-100 dark:bg-slate-700 rounded p-4 mb-4 hover:dark:bg-slate-600">
             🎞 Drop images here!
           </div>
         </FileDrop>
@@ -99,16 +99,16 @@ export function Sidebar() {
         <Login onLogin={onLogin} />
       )}
 
-      <h2>Uploads</h2>
+      <h2>Recent Uploads</h2>
       <ul className="list-inside list-none">
         {uploads.docs.map(upload => (
           <li key={upload._id} className="p-2">
-            <Link to={`/upload/${upload._id}`} className="block hover:bg-gray-100 rounded p-2">
+            <Link to={`/upload/${upload._id}`} className="block hover:bg-gray-100 rounded px-2">
               <span className="text-xs text-gray-500 block pb-2">
                 {new Date(upload.created).toLocaleString()}
               </span>
-              <span className="inline-block mr-2">{upload.count} files</span>
-              <span className="inline-block">({upload.status})</span>
+              <span className="inline-block mr-2">{upload.count} {upload.count === 1 ? 'file' : 'files'}</span>
+              <span className="inline-block text-slate-700">({upload.status})</span>
             </Link>
           </li>
         ))}

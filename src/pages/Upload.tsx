@@ -5,7 +5,7 @@ export function Upload() {
   const { database, useLiveQuery } = useFireproof('gallery')
 
   // const [uploadInfo] = useDocument(id)
-
+  console.log('id', id)
   const { docs } = useLiveQuery(
     (doc, emit) => {
       if (doc.type === 'file' && /image/.test(doc.contentType.toString())) {
@@ -14,10 +14,10 @@ export function Upload() {
     },
     { key: id }
   )
-
+  console.log('docs', docs)
   return (
     <>
-      <h1 className='pb-4'>Upload {id}</h1>
+      <h1 className="pb-4">Upload {id}</h1>
       <ul className="flex flex-wrap space-x-1 space-y-1">
         {docs?.map(upload => (
           <li key={upload._id} className="p-1 m-1">

@@ -11,7 +11,7 @@ import { Sidebar } from './components/Sidebar'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen dark:bg-gray-950 bg-slate-200 text-slate-800 dark:text-slate-200">
       <Sidebar />
       <div className="MainContent flex-1 p-4 ">{children}</div>
     </div>
