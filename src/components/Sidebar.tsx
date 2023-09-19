@@ -55,6 +55,7 @@ export function Sidebar() {
     const done = await cx.accountConnection?.client?.uploadDirectory(Array.from(files))
     const apiURL = `https://dweb.link/api/v0/ls?arg=${done?.toString()}`
     statusDoc.status = 'processing'
+    statusDoc.done = done!.toString()
     await database.put(statusDoc)
     const response = await fetch(apiURL)
     const json = await response.json()

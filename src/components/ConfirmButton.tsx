@@ -15,7 +15,7 @@ export function ConfirmButton({
     if (confirm) {
       const timeout = setTimeout(() => {
         setConfirm(false)
-      }, 2000)
+      }, 5000)
       return () => clearTimeout(timeout)
     }
   }, [confirm])

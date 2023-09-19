@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useFireproof } from 'use-fireproof'
 import { ImageDocList } from '../components/ImageDocList'
 import { AlbumForm, AlbumSettings } from '../components/AlbumForm'
+import { albumRenderHTML } from '../helpers'
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export function Album() {
   const navigate = useNavigate() // Initialize useHistory hook
@@ -15,10 +18,21 @@ export function Album() {
   const [album] = albumQ.docs
   const images = useLiveQuery('_id', { keys: album?.images || [] })
 
-  const handlePublish = () => {
-    // Your publish logic here
-    console.log('Album published')
+  const handlePublish = async () => {
+    const cx = database.connect('gallery');
+    const html = albumRenderHTML(album?.name!.toString(), images?.docs, album!.settings);
+    
+    // Create a File object with content type set to text/html
+    const file = new File([html], "album.html", { type: "text/html" });
+    
+    const done = await cx.accountConnection?.client?.uploadDirectory([file]);
+    const url = `https://${done?.toString()}.ipfs.w3s.link/album.html`
+
+    await sleep(1000)
+    window.open(url.toString(), '_blank')
   }
+  
+
   const handleDelete = () => {
     database.del(id!).then(() => {
       navigate('/') // Navigate back to root path
@@ -34,9 +48,6 @@ export function Album() {
   // const [settings, setSettings] = useState()
 
   const updateSettings = (newSettings: AlbumSettings) => {
-    // setSettings(newSettings)
-    console.log('newSettings', newSettings)
-    console.log('album', album)
     album.settings = newSettings
     album.updated = Date.now()
     database.put(album)
