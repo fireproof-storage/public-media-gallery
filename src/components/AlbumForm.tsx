@@ -1,34 +1,38 @@
 import React from 'react'
 import { ConfirmButton } from './ConfirmButton'
 
-interface AlbumFormProps {
+export interface AlbumSettings {
   columns: number
-  setColumns: React.Dispatch<React.SetStateAction<number>>,
-  setColor: React.Dispatch<React.SetStateAction<string>>,
+  color: string
   bgColor: string
-  setBgColor: React.Dispatch<React.SetStateAction<string>>,
+}
+
+interface AlbumFormProps {
+  settings: AlbumSettings
+  setSettings: (settings: AlbumSettings) => void
   handlePublish: () => void
   handleDelete: () => void
 }
 
 export const AlbumForm: React.FC<AlbumFormProps> = ({
-  columns,
-  setColumns,
-  color,
-  setColor,
-  bgColor,
-  setBgColor,
+  settings,
+  setSettings,
   handlePublish,
   handleDelete
 }) => {
+  const { columns, color, bgColor } = settings
 
   const customStyle = {
     backgroundColor: bgColor,
     color
   }
 
+  const updateSettings = (key: keyof AlbumSettings, value: any) => {
+    setSettings({ ...settings, [key]: value })
+  }
+
   return (
-    <form style={customStyle} className='rounded p-2 my-2'>
+    <form style={customStyle} className="rounded p-2 my-2">
       <label htmlFor="column-slider">Columns: </label>
       <input
         id="column-slider"
@@ -37,7 +41,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({
         max="6"
         step="1"
         value={columns}
-        onChange={e => setColumns(Number(e.target.value))}
+        onChange={e => updateSettings('columns', Number(e.target.value))}
       />
       <span>{columns}</span>
       <br />
@@ -47,7 +51,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({
         id="color-picker"
         type="color"
         value={color}
-        onChange={e => setColor(e.target.value)}
+        onChange={e => updateSettings('color', e.target.value)}
       />
       <br />
 
@@ -56,7 +60,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({
         id="bg-color-picker"
         type="color"
         value={bgColor}
-        onChange={e => setBgColor(e.target.value)}
+        onChange={e => updateSettings('bgColor', e.target.value)}
       />
       <br />
 

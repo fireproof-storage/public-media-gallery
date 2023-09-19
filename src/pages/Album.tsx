@@ -2,15 +2,13 @@ import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useFireproof } from 'use-fireproof'
 import { ImageDocList } from '../components/ImageDocList'
-import { ConfirmButton } from '../components/ConfirmButton'
-import { AlbumForm } from '../components/AlbumForm'
+import { AlbumForm, AlbumSettings } from '../components/AlbumForm'
 
 export function Album() {
   const navigate = useNavigate() // Initialize useHistory hook
 
   const { database, useLiveQuery } = useFireproof('gallery')
   const { id } = useParams()
-  const [columns, setColumns] = useState(3) // Initial value for columns
   const [showForm, setShowForm] = useState(false) // State to manage form visibility
 
   const albumQ = useLiveQuery('_id', { key: id })
@@ -26,14 +24,27 @@ export function Album() {
       navigate('/') // Navigate back to root path
     })
   }
-  const [color, setColor] = useState('#111'); // Initial color value
-  const [bgColor, setBgColor] = useState('#ffffff'); // Initial background color value
 
+  const settings = album?.settings || {
+      color: '#111111',
+      bgColor: '#eeeeee',
+      columns: 3
+    }
 
-  console.log('name', name)
+  // const [settings, setSettings] = useState()
+
+  const updateSettings = (newSettings: AlbumSettings) => {
+    // setSettings(newSettings)
+    console.log('newSettings', newSettings)
+    console.log('album', album)
+    album.settings = newSettings
+    album.updated = Date.now()
+    database.put(album)
+  }
+
   return (
-    <div >
-      <div className="flex justify-between items-center mb-2" >
+    <div>
+      <div className="flex justify-between items-center mb-2">
         <h1>Album: {album?.name}</h1>
         <button onClick={() => setShowForm(!showForm)} className="text-xl">
           ⚙️
@@ -41,12 +52,8 @@ export function Album() {
       </div>
       {showForm && (
         <AlbumForm
-          columns={columns}
-          setColumns={setColumns}
-          color={color}
-          setColor={setColor}
-          bgColor={bgColor}
-          setBgColor={setBgColor}
+          settings={settings}
+          setSettings={updateSettings}
           handlePublish={handlePublish}
           handleDelete={handleDelete}
         />
@@ -54,7 +61,7 @@ export function Album() {
 
       <ImageDocList
         docs={images.docs}
-        columns={columns}
+        columns={settings.columns}
         onReorder={docs => {
           const ids = docs.map(doc => doc._id)
           album.images = ids
