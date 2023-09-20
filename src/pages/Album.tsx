@@ -39,8 +39,6 @@ export function Album() {
     const done = await cx.accountConnection?.client?.uploadDirectory([file])
     const url = `https://${done?.toString()}.ipfs.w3s.link/album.html`
 
-    // await sleep(1000)
-    // window.open(url.toString(), '_blank')
     setPublishUrl(url.toString())
     setPublishStatus('published'); // Set to 'published' after the process is complete
   }
