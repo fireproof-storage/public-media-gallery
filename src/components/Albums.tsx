@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react'
+import { useState, useContext, useRef } from 'react'
 import { useDrop } from 'react-dnd'
 import { Link } from 'react-router-dom'
 import { AutoFocusInput } from './AutoFocusInput'
@@ -37,7 +37,9 @@ export function Albums() {
   const handleDrop = (albumId: string, item) => {
     const { id } = item
     database.get(albumId).then(albumDoc => {
-      albumDoc.images = albumDoc.images.filter(image => image !== id)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      albumDoc.images = albumDoc.images!.filter(image => image !== id) as string[]
       albumDoc.images.push(id)
       albumDoc.updated = Date.now()
       database.put(albumDoc)
@@ -47,7 +49,7 @@ export function Albums() {
   const [, drop] = useDrop({
     accept: ItemTypes.IMAGE,
     drop: (item, monitor) => {
-      const clientOffset = monitor.getClientOffset()
+      const clientOffset = monitor.getClientOffset()!
       const elementUnderCursor = document.elementFromPoint(clientOffset.x, clientOffset.y)
 
       // Traverse up the DOM tree to find the closest li element (album)
@@ -85,7 +87,7 @@ export function Albums() {
               <AutoFocusInput
                 value={albumName}
                 isActive={isCreating}
-                onChange={e => setAlbumName(e.target.value)}
+                onChange={(e) => setAlbumName(e.target.value)}
                 className="bg-slate-300 p-1 mr-2 text-xs text-black flex-grow"
               />
               <button type="submit" className="ml-2">
@@ -111,9 +113,9 @@ export function Albums() {
                   (isDragging ? ' bg-slate-100 dark:bg-slate-700' : '')
                 }
               >
-                <span className="inline-block mr-2">{album.name}</span>
+                <span className="inline-block mr-2">{album.name as string}</span>
                 <span className="inline-block text-slate-700 text-xs">
-                  {album.created && new Date(album.created).toLocaleString()}
+                  {album.created && new Date(album.created as number).toLocaleString()}
                 </span>
               </Link>
             </li>

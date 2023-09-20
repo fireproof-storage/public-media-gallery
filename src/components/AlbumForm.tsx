@@ -1,8 +1,8 @@
 import React from 'react'
 import { ConfirmButton } from './ConfirmButton'
-
+import type { Range1To6 } from './I'
 export interface AlbumSettings {
-  columns: number
+  columns: Range1To6
   color: string
   bgColor: string
 }

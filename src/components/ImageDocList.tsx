@@ -1,5 +1,5 @@
 import { Doc } from 'use-fireproof'
-import { useCallback, useRef } from 'react'
+import {  useRef } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 
 export const ItemTypes = {
@@ -11,7 +11,7 @@ interface DragItem {
   index: number
 }
 
-type Range1To6 = 1 | 2 | 3 | 4 | 5 | 6
+export type Range1To6 = 1 | 2 | 3 | 4 | 5 | 6
 
 const ImageDocListItem: React.FC<{ upload: Doc }> = ({ upload }) => {
   const ref = useRef(null)
@@ -29,7 +29,7 @@ const ImageDocListItem: React.FC<{ upload: Doc }> = ({ upload }) => {
         className="w-full h-auto"
         draggable="false"
         onDragStart={e => {
-          e.dataTransfer.setData('text', upload._id)
+          e.dataTransfer.setData('text', upload._id!)
         }}
         src={`https://${upload.cid}.ipfs.w3s.link`}
         alt={upload.name?.toString()}
@@ -47,43 +47,42 @@ export function ImageDocList({
   onReorder?: (newDocs: Doc[]) => void
   columns: Range1To6
 }) {
-
   const ref = useRef(null) // Create a ref for the list
 
   const [, drop] = useDrop({
     accept: ItemTypes.IMAGE,
     drop(item: DragItem, monitor) {
-      const dragIndex = docs.findIndex(doc => doc._id === item.id);
-    
+      const dragIndex = docs.findIndex(doc => doc._id === item.id)
+
       if (!ref.current) {
-        return;
+        return
       }
-    
+
       // Get mouse position
-      const clientOffset = monitor.getClientOffset();
-    
+      const clientOffset = monitor.getClientOffset()!
+
       // Get grid dimensions
-      const gridBoundingRect = ref.current.getBoundingClientRect();
-    
+      // @ts-ignore
+      const gridBoundingRect = ref.current.getBoundingClientRect()
+
       // Calculate dimensions of a single grid item
-      const itemWidth = gridBoundingRect.width / columns;
-      const itemHeight = gridBoundingRect.height / Math.ceil(docs.length / columns);
-    
+      const itemWidth = gridBoundingRect.width / columns
+      const itemHeight = gridBoundingRect.height / Math.ceil(docs.length / columns)
+
       // Calculate row and column based on mouse position
-      const hoverRow = Math.floor((clientOffset.y - gridBoundingRect.top) / itemHeight);
-      const hoverCol = Math.floor((clientOffset.x - gridBoundingRect.left) / itemWidth);
-    
+      const hoverRow = Math.floor((clientOffset.y - gridBoundingRect.top) / itemHeight)
+      const hoverCol = Math.floor((clientOffset.x - gridBoundingRect.left) / itemWidth)
+
       // Calculate hoverIndex
-      const hoverIndex = hoverRow * columns + hoverCol;
-    
+      const hoverIndex = hoverRow * columns + hoverCol
+
       if (dragIndex !== hoverIndex && onReorder) {
-        const newDocs = [...docs];
-        const [movedItem] = newDocs.splice(dragIndex, 1);
-        newDocs.splice(hoverIndex, 0, movedItem);
-        onReorder(newDocs);
+        const newDocs = [...docs]
+        const [movedItem] = newDocs.splice(dragIndex, 1)
+        newDocs.splice(hoverIndex, 0, movedItem)
+        onReorder(newDocs)
       }
     }
-    
   })
 
   drop(ref) // Use the drop function to wrap the ref

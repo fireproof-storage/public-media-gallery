@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useFireproof } from 'use-fireproof'
+import { DocFragment, useFireproof } from 'use-fireproof'
 import { ImageDocList } from '../components/ImageDocList'
 import { AlbumForm, AlbumSettings } from '../components/AlbumForm'
 import { albumRenderHTML } from '../helpers'
@@ -19,19 +19,22 @@ export function Album() {
   const images = useLiveQuery('_id', { keys: album?.images || [] })
 
   const handlePublish = async () => {
-    const cx = database.connect('gallery');
-    const html = albumRenderHTML(album?.name!.toString(), images?.docs, album!.settings);
-    
+    const cx = database.connect('gallery')
+    const html = albumRenderHTML(
+      album?.name!.toString(),
+      images?.docs as { cid: string; name: string }[],
+      album!.settings as unknown as AlbumSettings
+    )
+
     // Create a File object with content type set to text/html
-    const file = new File([html], "album.html", { type: "text/html" });
-    
-    const done = await cx.accountConnection?.client?.uploadDirectory([file]);
+    const file = new File([html], 'album.html', { type: 'text/html' })
+
+    const done = await cx.accountConnection?.client?.uploadDirectory([file])
     const url = `https://${done?.toString()}.ipfs.w3s.link/album.html`
 
     await sleep(1000)
     window.open(url.toString(), '_blank')
   }
-  
 
   const handleDelete = () => {
     database.del(id!).then(() => {
@@ -39,16 +42,16 @@ export function Album() {
     })
   }
 
-  const settings = album?.settings || {
-      color: '#111111',
-      bgColor: '#eeeeee',
-      columns: 3
-    }
+  const settings: AlbumSettings = (album?.settings || {
+    color: '#111111',
+    bgColor: '#eeeeee',
+    columns: 3
+  }) as unknown as AlbumSettings
 
   // const [settings, setSettings] = useState()
 
   const updateSettings = (newSettings: AlbumSettings) => {
-    album.settings = newSettings
+    album.settings = newSettings as unknown as DocFragment
     album.updated = Date.now()
     database.put(album)
   }
@@ -56,14 +59,14 @@ export function Album() {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h1>Album: {album?.name}</h1>
+        <h1>Album: {album?.name?.toString()}</h1>
         <button onClick={() => setShowForm(!showForm)} className="text-xl">
           ⚙️
         </button>
       </div>
       {showForm && (
         <AlbumForm
-          settings={settings}
+          settings={settings as unknown as AlbumSettings}
           setSettings={updateSettings}
           handlePublish={handlePublish}
           handleDelete={handleDelete}
@@ -74,7 +77,7 @@ export function Album() {
         docs={images.docs}
         columns={settings.columns}
         onReorder={docs => {
-          const ids = docs.map(doc => doc._id)
+          const ids = docs.map(doc => doc._id!)
           album.images = ids
           album.updated = Date.now()
           database.put(album)
