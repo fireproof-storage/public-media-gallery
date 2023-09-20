@@ -13,6 +13,7 @@ interface AlbumFormProps {
   handlePublish: () => void
   handleDelete: () => void
   publishUrl: string
+  publishStatus: 'unpublished' | 'publishing' | 'published'
 }
 
 export const AlbumForm: React.FC<AlbumFormProps> = ({
@@ -20,7 +21,8 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({
   setSettings,
   handlePublish,
   handleDelete,
-  publishUrl
+  publishUrl,
+  publishStatus
 }) => {
   const { columns, color, bgColor } = settings
 
@@ -68,7 +70,13 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({
 
       <ConfirmButton
         onConfirm={handlePublish}
-        initialText="Publish album"
+        initialText={
+          publishStatus === 'unpublished'
+            ? 'Publish album'
+            : publishStatus === 'publishing'
+            ? 'Publishing...'
+            : 'Published'
+        }
         confirmText="Are you sure?"
       />
       <ConfirmButton
@@ -78,10 +86,20 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({
       />
       {publishUrl && (
         <p>
-          Published at <a target="_blank" className='underline' href={publishUrl}>the album URL</a>. (<button onClick={(e)=>{
-            e.preventDefault()
-            navigator.clipboard.writeText(publishUrl)
-          }}>Click here to copy.</button>)
+          Published at{' '}
+          <a target="_blank" className="underline" href={publishUrl}>
+            the album URL
+          </a>
+          . (
+          <button
+            onClick={e => {
+              e.preventDefault()
+              navigator.clipboard.writeText(publishUrl)
+            }}
+          >
+            Click here to copy.
+          </button>
+          )
         </p>
       )}
     </form>

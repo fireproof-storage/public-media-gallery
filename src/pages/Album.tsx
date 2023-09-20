@@ -12,6 +12,9 @@ export function Album() {
   const { id } = useParams()
   const [showForm, setShowForm] = useState(false) // State to manage form visibility
   const [publishUrl, setPublishUrl] = useState('') // State to manage publish URL
+  const [publishStatus, setPublishStatus] = useState<'unpublished' | 'publishing' | 'published'>('unpublished');
+
+
 
   const [isEditingName, setIsEditingName] = useState(false) // Add this line
   const [newName, setNewName] = useState('') // Add this line
@@ -21,6 +24,8 @@ export function Album() {
   const images = useLiveQuery('_id', { keys: album?.images || [] })
 
   const handlePublish = async () => {
+    setPublishStatus('publishing'); // Set to 'publishing' before starting the process
+
     const cx = database.connect('gallery')
     const html = albumRenderHTML(
       album?.name!.toString(),
@@ -37,6 +42,7 @@ export function Album() {
     // await sleep(1000)
     // window.open(url.toString(), '_blank')
     setPublishUrl(url.toString())
+    setPublishStatus('published'); // Set to 'published' after the process is complete
   }
 
   const handleDelete = () => {
@@ -54,6 +60,7 @@ export function Album() {
   // const [settings, setSettings] = useState()
 
   const updateSettings = (newSettings: AlbumSettings) => {
+    setPublishStatus('unpublished') // Set to 'unpublished' when settings are updated
     album.settings = newSettings as unknown as DocFragment
     album.updated = Date.now()
     database.put(album)
@@ -102,6 +109,7 @@ export function Album() {
           handlePublish={handlePublish}
           handleDelete={handleDelete}
           publishUrl={publishUrl}
+          publishStatus={publishStatus}
         />
       )}
 
