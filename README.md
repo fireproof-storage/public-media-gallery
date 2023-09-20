@@ -1,27 +1,24 @@
-# React + TypeScript + Vite
+# Public Media Gallery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a demo of Fireproof, a new web database that's built from the ground up for distributed applications. This app showcases Fireproof's integration with web3.storage and IPFS. While Fireproof can run on any cloud, the developer-friendly defaults showcased here are designed to make it possible to write full featured apps without needing a backend.
 
-Currently, two official plugins are available:
+In this example you login by validating your email address, and then upload images to your library. From there you can compose albums, and publish them to the web.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+User accounts are self-sovereign, powered by DID and UCAN, which means they are tied to private keys that live in your device and which no software can extract. This means that your account is truly yours, but it also means your devices need to be online at the same each time you setup a new device, because device setup involves the old device cryptographically certifying the new device.
 
-## Expanding the ESLint configuration
+Part of the Fireproof hypothesis is that distributed identity and applications can be be made friendly enough for everyone, from developers to mainstream users. So while this demo relies on cutting edge technology, it's also designed to show how apps built like this can be compelling, fun, and usable.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+<img width="2168" alt="Screen Shot 2023-09-20 at 8 44 13 AM" src="https://github.com/fireproof-storage/public-media-gallery/assets/253/8f06b21a-5207-4edd-baf9-43fb13df6187">
 
-- Configure the top-level `parserOptions` property like this:
+<img width="2168" alt="Screen Shot 2023-09-20 at 8 49 05 AM" src="https://github.com/fireproof-storage/public-media-gallery/assets/253/2bde4ef9-1a5e-4aa3-bd7c-2643d8d4b298">
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+## Developing
+
+Run the app locally by cloning the repo and then running:
+
+```bash
+npm install
+npm start
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Please run `npx tsc` on pull requests to minimize cleanup.
