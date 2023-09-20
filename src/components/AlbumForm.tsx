@@ -1,6 +1,6 @@
 import React from 'react'
 import { ConfirmButton } from './ConfirmButton'
-import type { Range1To6 } from './I'
+import type { Range1To6 } from './ImageDocList'
 export interface AlbumSettings {
   columns: Range1To6
   color: string

@@ -34,7 +34,7 @@ export function Albums() {
     }
   })
 
-  const handleDrop = (albumId: string, item) => {
+  const handleDrop = (albumId: string, item : {id : string}) => {
     const { id } = item
     database.get(albumId).then(albumDoc => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -61,7 +61,7 @@ export function Albums() {
       if (targetElement) {
         const targetAlbumId = targetElement.getAttribute('data-album-id')
         if (targetAlbumId) {
-          handleDrop(targetAlbumId, item)
+          handleDrop(targetAlbumId, item as { id: string })
         }
       }
     }
