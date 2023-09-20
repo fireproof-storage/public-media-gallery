@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FileDrop } from 'react-file-drop'
 import { useFireproof } from 'use-fireproof'
 import { Login } from './Login'
@@ -9,6 +9,7 @@ export function Sidebar() {
   const { database } = useFireproof('gallery')
   const [authorized, setAuthorized] = useState(false)
   const cx = database.connect('gallery')
+  const fileInputRef = useRef(null) // Add this line
 
   useEffect(() => {
     cx.ready.then(() => {
@@ -20,6 +21,10 @@ export function Sidebar() {
     cx.authorize(email).then(() => {
       setAuthorized(true)
     })
+  }
+  const onTargetClick = () => {
+    // Add this function
+    fileInputRef.current.click()
   }
 
   const gotFiles = async (files: FileList | null) => {
@@ -76,7 +81,14 @@ export function Sidebar() {
     <div className="w-1/4 p-4 dark:bg-gray-900 bg-slate-200">
       {authorized ? (
         <>
-          <FileDrop onDrop={gotFiles}>
+          <input
+            type="file"
+            multiple
+            ref={fileInputRef}
+            onChange={e => gotFiles(e.target.files)}
+            style={{ display: 'none' }}
+          />
+          <FileDrop onDrop={gotFiles} onTargetClick={onTargetClick}>
             <div
               style={{ minHeight: '3em' }}
               className="bg-slate-100 dark:bg-slate-700 rounded p-4 mb-4 hover:dark:bg-slate-600"

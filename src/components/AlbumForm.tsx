@@ -12,13 +12,15 @@ interface AlbumFormProps {
   setSettings: (settings: AlbumSettings) => void
   handlePublish: () => void
   handleDelete: () => void
+  publishUrl: string
 }
 
 export const AlbumForm: React.FC<AlbumFormProps> = ({
   settings,
   setSettings,
   handlePublish,
-  handleDelete
+  handleDelete,
+  publishUrl
 }) => {
   const { columns, color, bgColor } = settings
 
@@ -74,6 +76,14 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({
         initialText="Delete album"
         confirmText="Are you sure?"
       />
+      {publishUrl && (
+        <p>
+          Published at <a target="_blank" className='underline' href={publishUrl}>the album URL</a>. (<button onClick={(e)=>{
+            e.preventDefault()
+            navigator.clipboard.writeText(publishUrl)
+          }}>Click here to copy.</button>)
+        </p>
+      )}
     </form>
   )
 }

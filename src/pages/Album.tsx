@@ -5,14 +5,16 @@ import { ImageDocList } from '../components/ImageDocList'
 import { AlbumForm, AlbumSettings } from '../components/AlbumForm'
 import { albumRenderHTML } from '../helpers'
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
 export function Album() {
   const navigate = useNavigate() // Initialize useHistory hook
 
   const { database, useLiveQuery } = useFireproof('gallery')
   const { id } = useParams()
   const [showForm, setShowForm] = useState(false) // State to manage form visibility
+  const [publishUrl, setPublishUrl] = useState('') // State to manage publish URL
+
+  const [isEditingName, setIsEditingName] = useState(false) // Add this line
+  const [newName, setNewName] = useState('') // Add this line
 
   const albumQ = useLiveQuery('_id', { key: id })
   const [album] = albumQ.docs
@@ -32,8 +34,9 @@ export function Album() {
     const done = await cx.accountConnection?.client?.uploadDirectory([file])
     const url = `https://${done?.toString()}.ipfs.w3s.link/album.html`
 
-    await sleep(1000)
-    window.open(url.toString(), '_blank')
+    // await sleep(1000)
+    // window.open(url.toString(), '_blank')
+    setPublishUrl(url.toString())
   }
 
   const handleDelete = () => {
@@ -59,7 +62,35 @@ export function Album() {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h1>Album: {album?.name?.toString()}</h1>
+        {isEditingName ? ( // Add this conditional rendering block
+          <form
+            onSubmit={e => {
+              e.preventDefault()
+              // Call your onNameSave function here
+              album.name = newName
+              album.updated = Date.now()
+              database.put(album)
+              setIsEditingName(false)
+            }}
+          >
+            <input
+              className="bg-slate-300 p-1 mr-2 text-xs text-black flex-grow"
+              type="text"
+              value={newName}
+              onChange={e => setNewName(e.target.value)}
+            />
+            <button type="submit">✔️</button>
+          </form>
+        ) : (
+          <h1
+            onClick={() => {
+              setNewName(album?.name?.toString() || '')
+              setIsEditingName(true)
+            }}
+          >
+            Album: {album?.name?.toString()}
+          </h1>
+        )}
         <button onClick={() => setShowForm(!showForm)} className="text-xl">
           ⚙️
         </button>
@@ -70,6 +101,7 @@ export function Album() {
           setSettings={updateSettings}
           handlePublish={handlePublish}
           handleDelete={handleDelete}
+          publishUrl={publishUrl}
         />
       )}
 
