@@ -2,28 +2,13 @@ import { useEffect, useState } from 'react'
 import { FileDrop } from 'react-file-drop'
 import { useFireproof } from 'use-fireproof'
 import { Login } from './Login'
-import { Link } from 'react-router-dom'
 import { Albums } from './Albums'
+import { Imports } from './Imports'
 
 export function Sidebar() {
-  const { database, useLiveQuery } = useFireproof('gallery')
+  const { database } = useFireproof('gallery')
   const [authorized, setAuthorized] = useState(false)
   const cx = database.connect('gallery')
-
-  // const images = useLiveQuery((doc, emit) => {
-  //   if (doc.contentType && /image/.test(doc.contentType.toString())) {
-  //     emit(doc.added)
-  //   }
-  // })
-
-  const uploads = useLiveQuery(
-    (doc, emit) => {
-      if (doc.type === 'upload') {
-        emit(doc.created)
-      }
-    },
-    { descending: true }
-  )
 
   useEffect(() => {
     cx.ready.then(() => {
@@ -90,33 +75,21 @@ export function Sidebar() {
   return (
     <div className="w-1/4 p-4 dark:bg-gray-900 bg-slate-200">
       {authorized ? (
-        <FileDrop onDrop={gotFiles}>
-          <div style={{ minHeight: '3em' }} className="bg-slate-100 dark:bg-slate-700 rounded p-4 mb-4 hover:dark:bg-slate-600">
-            🎞 Drop image files here! 🖼
-          </div>
-        </FileDrop>
+        <>
+          <FileDrop onDrop={gotFiles}>
+            <div
+              style={{ minHeight: '3em' }}
+              className="bg-slate-100 dark:bg-slate-700 rounded p-4 mb-4 hover:dark:bg-slate-600"
+            >
+              🎞 Drop image files here! 🖼
+            </div>
+          </FileDrop>
+          <Albums />
+          <Imports />
+        </>
       ) : (
         <Login onLogin={onLogin} />
       )}
-
-    <Albums />
-
-
-
-      <h2>Recent Imports</h2>
-      <ul className="list-inside list-none">
-        {uploads.docs.map(upload => (
-          <li key={upload._id} className="p-2">
-            <Link to={`/upload/${upload._id}`} className="block hover:bg-gray-100dark: hover:bg-gray-800 rounded px-2">
-              <span className="text-xs text-gray-500 block pb-2">
-                {new Date(upload.created as number).toLocaleString()}
-              </span>
-              <span className="inline-block mr-2">{upload.count?.toString()} {upload.count === 1 ? 'file' : 'files'}</span>
-              <span className="inline-block text-slate-700">({upload.status?.toString()})</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }
