@@ -8,9 +8,12 @@ User accounts are self-sovereign, powered by DID and UCAN, which means they are 
 
 Part of the Fireproof hypothesis is that distributed identity and applications can be be made friendly enough for everyone, from developers to mainstream users. So while this demo relies on cutting edge technology, it's also designed to show how apps built like this can be compelling, fun, and usable.
 
-<img width="2168" alt="Screen Shot 2023-09-20 at 8 44 13 AM" src="https://github.com/fireproof-storage/public-media-gallery/assets/253/8f06b21a-5207-4edd-baf9-43fb13df6187">
+![upload](https://github.com/fireproof-storage/public-media-gallery/assets/253/025d59e3-a1bb-4ca6-b6c2-cc7ac3ee7bfa)
 
-<img width="2168" alt="Screen Shot 2023-09-20 at 8 49 05 AM" src="https://github.com/fireproof-storage/public-media-gallery/assets/253/2bde4ef9-1a5e-4aa3-bd7c-2643d8d4b298">
+Customize the style and layout of your gallery, then [publish it to a plain HTML link.](https://bafybeidekgfphvxv2ttcupfko3istu4qxjglnhgl7qq3mfciqkmusrrcs4.ipfs.w3s.link/album.html)
+
+![gallery](https://github.com/fireproof-storage/public-media-gallery/assets/253/e09bcdc0-c2e4-4be3-9ee9-d0e5ff67f9c4)
+
 
 ## Developing
 
