@@ -17,12 +17,12 @@ export function Imports() {
       <h2>Recent Imports</h2>
       <ul className="list-inside list-none">
         {uploads.docs.map(upload => (
-          <li key={upload._id} className="p-2">
+          <li key={upload._id} className="p-2 text-gray-500">
             <Link
               to={`/upload/${upload._id}`}
-              className="block hover:bg-gray-100dark: hover:bg-gray-800 rounded px-2"
+              className="block text-xs hover:bg-gray-100dark: hover:bg-gray-800 rounded px-2"
             >
-              <span className="text-xs text-gray-500 block pb-2">
+              <span className="  block pb-2">
                 {new Date(upload.created as number).toLocaleString()}
               </span>
               <span className="inline-block mr-2">

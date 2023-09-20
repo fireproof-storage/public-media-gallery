@@ -34,7 +34,7 @@ export function Albums() {
     }
   })
 
-  const handleDrop = (albumId: string, item : {id : string}) => {
+  const handleDrop = (albumId: string, item: { id: string }) => {
     const { id } = item
     database.get(albumId).then(albumDoc => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -46,9 +46,26 @@ export function Albums() {
     })
   }
 
+  const [hoveredAlbumId, setHoveredAlbumId] = useState<string | null>(null)
+
   const [, drop] = useDrop({
     accept: ItemTypes.IMAGE,
+    hover: (item, monitor) => {
+      const clientOffset = monitor.getClientOffset()!
+      const elementUnderCursor = document.elementFromPoint(clientOffset.x, clientOffset.y)
+
+      let targetElement = elementUnderCursor
+      while (targetElement && targetElement.tagName !== 'LI') {
+        targetElement = targetElement.parentElement
+      }
+
+      if (targetElement) {
+        const targetAlbumId = targetElement.getAttribute('data-album-id')
+        setHoveredAlbumId(targetAlbumId || null)
+      }
+    },
     drop: (item, monitor) => {
+      setHoveredAlbumId(null) // Reset hover state on drop
       const clientOffset = monitor.getClientOffset()!
       const elementUnderCursor = document.elementFromPoint(clientOffset.x, clientOffset.y)
 
@@ -87,7 +104,7 @@ export function Albums() {
               <AutoFocusInput
                 value={albumName}
                 isActive={isCreating}
-                onChange={(e) => setAlbumName(e.target.value)}
+                onChange={e => setAlbumName(e.target.value)}
                 className="bg-slate-300 p-1 mr-2 text-xs text-black flex-grow"
               />
               <button type="submit" className="ml-2">
@@ -110,7 +127,8 @@ export function Albums() {
                 to={`/album/${album._id}`}
                 className={
                   'block hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-2' +
-                  (isDragging ? ' bg-slate-100 dark:bg-slate-700' : '')
+                  (isDragging && hoveredAlbumId === album._id ? ' bg-red-500' : 
+                   isDragging ? ' bg-slate-100 dark:bg-slate-700' : '')
                 }
               >
                 <span className="inline-block mr-2">{album.name as string}</span>
