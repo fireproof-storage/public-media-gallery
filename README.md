@@ -14,6 +14,32 @@ Customize the style and layout of your gallery, then [publish it to a plain HTML
 
 ![gallery](https://github.com/fireproof-storage/public-media-gallery/assets/253/e09bcdc0-c2e4-4be3-9ee9-d0e5ff67f9c4)
 
+## Future Iterations
+
+To iterate from a starting point like this, into something people would use for real world, here are some ideas for additional features:
+
+### Easy to Add
+
+- Manual tagging workflows
+- Auto tag all videos in an import
+
+### Medium Complexity
+
+- Auto tag based on exif or other machine data
+- Transcoding / browser optimizing
+- Importing weird formats
+
+### Hard to Implement
+
+- Non-public asset files (private metadata is no problem)
+
+### On the Roadmap
+
+Things you'd get "for free" as they are part of the Fireproof roadmap, even if they are only nascent now:
+
+- Multi-user collaboration on a metadata library
+- Passkey (TouchID / FaceID) login (also WalletConnect)
+- Multi-device sync (Already works)
 
 ## Developing
 
