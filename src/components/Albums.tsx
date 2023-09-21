@@ -19,6 +19,11 @@ export function Albums() {
       type: 'album',
       name: albumName,
       images: [],
+      settings: {
+        color: '#111111',
+        bgColor: '#eeeeee',
+        columns: 3
+      },
       created: Date.now(),
       updated: Date.now()
     }

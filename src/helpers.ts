@@ -1,6 +1,7 @@
 import { AlbumSettings } from "./components/AlbumForm";
 
 export function albumRenderHTML(albumName: string, imageDocs: { cid: string, name: string }[], settings: AlbumSettings) {
+  // settings = settings || {}
   const { color, bgColor, columns } = settings;
 
   // Generate list items for images

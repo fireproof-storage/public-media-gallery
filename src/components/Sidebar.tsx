@@ -7,6 +7,7 @@ import { Imports } from './Imports'
 
 export function Sidebar() {
   const { database } = useFireproof('gallery')
+
   const [authorized, setAuthorized] = useState(false)
   const cx = database.connect('gallery')
   const fileInputRef = useRef(null) // Add this line
