@@ -18,7 +18,7 @@
     "react-dom": "^18.2.0",
     "react-file-drop": "^3.1.6",
     "react-router-dom": "^6.16.0",
-    "use-fireproof": "^0.13.2"
+    "use-fireproof": "^0.13.3"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",

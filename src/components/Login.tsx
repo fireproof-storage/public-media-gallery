@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export function Login({ onLogin }: { onLogin: (email: `${string}@${string}`) => void }) {
+export function Login({ onLogin, placeholder }: { placeholder: string, onLogin: (email: `${string}@${string}`) => void }) {
   const [email, setEmail] = useState<`${string}@${string}`>()
   const [didSubmit, setDidSubmit] = useState(false)
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -29,7 +29,7 @@ export function Login({ onLogin }: { onLogin: (email: `${string}@${string}`) => 
               className="p-1 mt-1 w-full text-slate-900"
               type="text"
               value={email}
-              placeholder="email@example.com"
+              placeholder={placeholder || "email@example.com"}
               onChange={onChange}
             />
             <button
